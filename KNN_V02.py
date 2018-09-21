@@ -2,6 +2,7 @@ import math
 import os
 
 class KnnModel() :
+	Accuracy = 0.0
 	def __init__(self,howManySamples,keys=7,typeOfFunction="Euclidean",howToSelectSamples=1):
 		self.howManySamples = howManySamples
 		self.keys = keys # no of keys
@@ -168,7 +169,8 @@ class KnnModel() :
 				no_of_true_preduction = no_of_true_preduction + 1
 		acc = no_of_true_preduction * 1.0 / no_Of_Samples
 		accuracy = acc * 100
-		print "Accuracy : ", accuracy
+		#print "Accuracy : ", accuracy
+		self.Accuracy = accuracy
 
 
 	def findMinDistancesAndRetuenThereLables(self,dis,la):
@@ -222,7 +224,7 @@ def testAccuracyWithKeyChange():
 	for tempKey in range(1,15,2):
 		obj = KnnModel(500,tempKey,"Manhattan",1)
 		obj.myTest()
-		print tempItration , "," , obj.Accuracy
+		print tempKey , "," , obj.Accuracy
 		del obj
 
 def testAccuracyWithSampleSelectChange():
@@ -235,12 +237,18 @@ def testAccuracyWithSampleSelectChange():
 
 
 # Euclidean or Manhattan
-knnObj = KnnModel(500,7,"Manhattan",2)
-knnObj.myTest()
-del knnObj
-knnObj = KnnModel(500,7,"Euclidean",2)
-knnObj.myTest()
 
 
 #testAccuracyWithSampleSelectChange()
-#testAccuracyWithKeyChange()
+testAccuracyWithKeyChange()
+
+"""
+knnObj = KnnModel(500,7,"Manhattan",2)
+knnObj.myTest()
+print "Accuracy",knnObj.Accuracy
+del knnObj
+knnObj = KnnModel(500,7,"Euclidean",2)
+knnObj.myTest()
+print "Accuracy",knnObj.Accuracy
+
+"""
