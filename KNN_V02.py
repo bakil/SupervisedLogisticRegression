@@ -3,6 +3,10 @@ import os
 
 class KnnModel() :
 	Accuracy = 0.0
+	FN = 0
+	FP = 0
+	TN = 0
+	TP = 0
 	def __init__(self,howManySamples,keys=7,typeOfFunction="Euclidean",howToSelectSamples=1):
 		self.howManySamples = howManySamples
 		self.keys = keys # no of keys
@@ -163,9 +167,28 @@ class KnnModel() :
 	def testKNN(self,Te_DS_features,Te_DS_lables,Tr_DS_features,Tr_DS_lables):
 		no_Of_Samples = len(Te_DS_lables)
 		no_of_true_preduction = 0
+		trueSample = 0
 		for no in range(no_Of_Samples) :
-			preducted = self.KNN(Te_DS_features[no],Tr_DS_features,Tr_DS_lables)
-			if preducted == Te_DS_lables[no] :
+			predicted = self.KNN(Te_DS_features[no],Tr_DS_features,Tr_DS_lables)
+
+
+			Actual = Te_DS_lables[no]
+
+			if predicted == Actual:
+				trueSample+=1
+				if predicted == 0.0:
+					self.TN = self.TN + 1
+				else :
+					self.TP = self.TP + 1
+			else:
+				if predicted == 0.0:
+					self.FN = self.FN + 1
+				else :
+					self.FP = self.FP + 1
+
+
+
+			if predicted == Te_DS_lables[no] :
 				no_of_true_preduction = no_of_true_preduction + 1
 		acc = no_of_true_preduction * 1.0 / no_Of_Samples
 		accuracy = acc * 100
@@ -220,35 +243,68 @@ class KnnModel() :
 
 
 def testAccuracyWithKeyChange():
+	folder = os.getcwd() + "\\"
+	f = open("KNNdifferentKeys.txt", "a")
+	print " checking how accuracy change with changing of Keys \n"
+	print "Keys" , "," , "Accuracy", "," , "FP", "," , "FN", "," , "TP","," , "TN"
+	f.write("\n \n checking how accuracy change with changing way of iterations \n \n")
+	f.write("Keys" + "," + "Accuracy"+ "," + "FP"+ "," + "FN"+ "," + "TP"+"," + "TN \n")
 	print "Key" , "," , "Accuracy"
-	for tempKey in range(1,15,2):
-		obj = KnnModel(500,tempKey,"Manhattan",1)
+	for tempKey in range(1,31,2):
+		obj = KnnModel(5000,tempKey,"Manhattan",2)
 		obj.myTest()
 		print tempKey , "," , obj.Accuracy
+		f.write( str(tempKey) + "," + str(obj.Accuracy) + "," + str(obj.FP) + "," + str(obj.FN)+ "," + str(obj.TP) + "," + str(obj.TN) + "\n")
 		del obj
+	f.close()
 
 def testAccuracyWithSampleSelectChange():
+	folder = os.getcwd() + "\\"
+	f = open("KNNdifferentSample.txt", "a")
+	print " checking how accuracy change with changing way of selecting samples \n"
+	print "sampleSelect" , "," , "Accuracy", "," , "FP", "," , "FN", "," , "TP","," , "TN"
+	f.write("\n \n checking how accuracy change with changing way of selecting samples \n \n")
+	f.write("sampleSelect" + "," + "Accuracy"+ "," + "FP"+ "," + "FN"+ "," + "TP"+"," + "TN \n")
 	print "sampleSelect" , "," , "Accuracy"
+
 	for sampleSelect in range(1,5):
-		obj = KnnModel(500,5,"Manhattan",sampleSelect)
+		obj = KnnModel(5000,5,"Manhattan",sampleSelect)
 		obj.myTest()
 		print sampleSelect , "," , obj.Accuracy
+		f.write( str(sampleSelect) + "," + str(obj.Accuracy) + "," + str(obj.FP) + "," + str(obj.FN)+ "," + str(obj.TP) + "," + str(obj.TN) + "\n")
 		del obj
+	f.close()
+
+
+def testAccuracyWithDistanceFunctionChange():
+	folder = os.getcwd() + "\\"
+	f = open("KNNdifferentFunction.txt", "a")
+	print " checking how accuracy change with changing Distance calculation methods \n"
+	print "Method" , "," , "Accuracy", "," , "FP", "," , "FN", "," , "TP","," , "TN"
+	f.write("\n \n checking how accuracy change with changing Distance calculation methods \n \n")
+	f.write("Method" + "," + "Accuracy"+ "," + "FP"+ "," + "FN"+ "," + "TP"+"," + "TN \n")
+	print "Method" , "," , "Accuracy"
+	methods = ["Euclidean","Manhattan"]
+	for method in methods :
+		obj = KnnModel(5000,5,method,2)
+		obj.myTest()
+		print method , "," , obj.Accuracy
+		f.write( method + "," + str(obj.Accuracy) + "," + str(obj.FP) + "," + str(obj.FN)+ "," + str(obj.TP) + "," + str(obj.TN) + "\n")
+		del obj
+	f.close()
 
 
 # Euclidean or Manhattan
 
 
-#testAccuracyWithSampleSelectChange()
+testAccuracyWithSampleSelectChange()
 testAccuracyWithKeyChange()
+testAccuracyWithDistanceFunctionChange()
 
-"""
-knnObj = KnnModel(500,7,"Manhattan",2)
-knnObj.myTest()
-print "Accuracy",knnObj.Accuracy
-del knnObj
-knnObj = KnnModel(500,7,"Euclidean",2)
-knnObj.myTest()
-print "Accuracy",knnObj.Accuracy
-
-"""
+#knnObj = KnnModel(500,7,"Manhattan",2)
+#knnObj.myTest()
+#print "Accuracy",knnObj.Accuracy
+#del knnObj
+#knnObj = KnnModel(500,7,"Euclidean",2)
+#knnObj.myTest()
+#print "Accuracy",knnObj.Accuracy

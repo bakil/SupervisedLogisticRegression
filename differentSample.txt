@@ -1,0 +1,9 @@
+
+ 
+ checking how accuracy change with changing way of selecting samples 
+ 
+sampleSelect,Accuracy,FP,FN,TP,TN 
+1,81.94,903,0,2500,1597
+2,89.16,542,0,2500,1958
+3,99.54,7,16,2484,2493
+4,99.38,12,19,2481,2488

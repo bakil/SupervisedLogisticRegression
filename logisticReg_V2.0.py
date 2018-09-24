@@ -4,6 +4,10 @@ import os
 class logReg():
 	weights = list() # the weight to learn 
 	Accuracy = 0.0
+	FN = 0
+	FP = 0
+	TN = 0
+	TP = 0
 
 
 	def __init__(self,rate=0.1,iterations=10,howManySamples=5000,howToSelectSamples=1):
@@ -184,12 +188,26 @@ class logReg():
 		noOfSamples = len(list1);
 		for sampleNo in range(0,noOfSamples) :
 			#print list1[sampleNo],list2[sampleNo]
-			if list1[sampleNo] == list2[sampleNo]:
+			predicted = list1[sampleNo]
+			Actual = list2[sampleNo]
+
+			if predicted == Actual:
 				trueSample+=1
+				if predicted == 0.0:
+					self.TN = self.TN + 1
+				else :
+					self.TP = self.TP + 1
+			else:
+				if predicted == 0.0:
+					self.FN = self.FN + 1
+				else :
+					self.FP = self.FP + 1
+
 		#print float(trueSample) , float(noOfSamples)
-		acc = float(trueSample)/float(noOfSamples)
+		acc = (float(trueSample)/float(noOfSamples)) * 100
 		#print acc
-		return acc*100.0
+		self.Accuracy = acc
+		
 
 
 	def test(self,tempTestFeatures,tempTestLable):
@@ -204,9 +222,9 @@ class logReg():
 				crisp = 1.0
 				calculatedLable.append(crisp)
 			#print  classifiedOut, crisp, tempTestLable[i]
-		accuracy = self.findAccuracy(calculatedLable,tempTestLable)
+		self.findAccuracy(calculatedLable,tempTestLable)
 		#print "iterations = ",self.iterations ,"    accuracy = ",accuracy, "%"
-		return accuracy
+		#return accuracy
 
 		
 
@@ -218,28 +236,50 @@ class logReg():
 		features , lables =  self.dataSetTune(training_DS,col)
 		self.train(features,lables)
 		features , lables =  self.dataSetTune(test_DS,col)
-		self.Accuracy = self.test(features, lables)
+		self.test(features, lables)
 
 	
 
 def testAccuracyWithItrationChange():
-	print "iterations" , "," , "Accuracy"
-	for tempItration in range(1,3):
+	folder = os.getcwd() + "\\"
+	f = open("differentItratsion.txt", "a")
+	print " checking how accuracy change with changing way of iterations \n"
+	print "iterations" , "," , "Accuracy", "," , "FP", "," , "FN", "," , "TP","," , "TN"
+	f.write("\n \n checking how accuracy change with changing way of iterations \n \n")
+	f.write("iterations" + "," + "Accuracy"+ "," + "FP"+ "," + "FN"+ "," + "TP"+"," + "TN \n")
+	for tempItration in range(1,30):
 		obj = logReg(0.3,tempItration,5000)
 		obj.myTest()
 		print tempItration , "," , obj.Accuracy
+		f.write( str(tempItration) + "," + str(obj.Accuracy) + "," + str(obj.FP) + "," + str(obj.FN)+ "," + str(obj.TP) + "," + str(obj.TN) + "\n")
 		del obj
+	f.close()
 
 def testAccuracyWithSampleSelectChange():
-	print "sampleSelect" , "," , "Accuracy"
+	folder = os.getcwd() + "\\"
+	f = open("differentSample.txt", "a")
+	print " checking how accuracy change with changing way of selecting samples \n"
+	print "sampleSelect" , "," , "Accuracy", "," , "FP", "," , "FN", "," , "TP","," , "TN"
+	f.write("\n \n checking how accuracy change with changing way of selecting samples \n \n")
+	f.write("sampleSelect" + "," + "Accuracy"+ "," + "FP"+ "," + "FN"+ "," + "TP"+"," + "TN \n")
+	#print "sampleSelect" , "," , "Accuracy", "," , "FP", "," , "FN", "," , "TP","," , "TN"
 	for sampleSelect in range(1,5):
-		obj = logReg(0.3,5,5000,sampleSelect)
+		obj = logReg(0.1,10,5000,sampleSelect)
 		obj.myTest()
-		print sampleSelect , "," , obj.Accuracy
+		print sampleSelect , "," , obj.Accuracy, "," , obj.FP, "," , obj.FN, "," , obj.TP, "," , obj.TN
+		f.write( str(sampleSelect) + "," + str(obj.Accuracy) + "," + str(obj.FP) + "," + str(obj.FN)+ "," + str(obj.TP) + "," + str(obj.TN) + "\n")
 		del obj
+	f.close()
+
 
 def testAccuracyWithRateChange():
-	print "rate" , "," , "Accuracy"
+	folder = os.getcwd() + "\\"
+	f = open("differentRate.txt", "a")
+	print " checking how accuracy change with changing Rate \n"
+	print "Rate" , "," , "Accuracy", "," , "FP", "," , "FN", "," , "TP","," , "TN"
+	f.write("\n \n checking how accuracy change with changing way of Rate \n \n")
+	f.write("Rate" + "," + "Accuracy"+ "," + "FP"+ "," + "FN"+ "," + "TP"+"," + "TN \n")
+	#print "rate" , "," , "Accuracy"
 	rates = list()
 	rateValue = 0.1
 	while(rateValue <= 0.3) :
@@ -248,13 +288,25 @@ def testAccuracyWithRateChange():
 
 	
 	for tempRate in rates:
-		obj = logReg(tempRate,8,500,1)
+		obj = logReg(tempRate,8,5000,1)
 		obj.myTest()
 		print tempRate , "," , obj.Accuracy
+		f.write( str(tempRate) + "," + str(obj.Accuracy) + "," + str(obj.FP) + "," + str(obj.FN)+ "," + str(obj.TP) + "," + str(obj.TN) + "\n")
 		del obj
+	f.close()
 
 
 
-#testAccuracyWithItrationChange()
-#testAccuracyWithRateChange()
+testAccuracyWithItrationChange()
+testAccuracyWithRateChange()
 testAccuracyWithSampleSelectChange()
+
+
+#for selectMethod in methods = [1,2,3,4] :
+#	print "selection method no : ", selectMethod
+
+
+
+#obj = logReg(0.1,8,500,1)
+#obj.myTest()
+#print obj.Accuracy
