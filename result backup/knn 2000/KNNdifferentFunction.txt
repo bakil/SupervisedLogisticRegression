@@ -1,0 +1,7 @@
+
+ 
+ checking how accuracy change with changing Distance calculation methods 
+ 
+Method,Accuracy,FP,FN,TP,TN 
+Euclidean,94.95,98,3,997,902
+Manhattan,99.25,9,6,994,991

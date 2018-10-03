@@ -1,0 +1,7 @@
+checking how accuracy change with changing way of selecting samples 
+ 
+sampleSelect,Accuracy,FP,FN,TP,TN 
+1,50.0,25,0,25,0
+2,50.0,25,0,25,0
+3,50.0,25,0,25,0
+4,50.0,25,0,25,0
