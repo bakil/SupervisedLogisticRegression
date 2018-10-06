@@ -35,7 +35,7 @@ class logReg():
 		fileHandeler = open(filePath)
 		for line in fileHandeler :
 			tempInterrupt+=1
-			if tempInterrupt > self.howManySamples :
+			if tempInterrupt > self.howManySamples * 2 :
 				break
 			line.strip(line)
 			if line[0] == "#" :
@@ -301,9 +301,9 @@ def testAccuracyWithItrationChange():
 
 def testAccuracyWithSampleSelectChange():
 	fixed_no_of_samples = 50
-	fixed_value_of_rate = 0.2
+	fixed_value_of_rate = 0.1
 	#fixed_sampleSelectionMethod = 1
-	fixed_itration_value = 1
+	fixed_itration_value = 20
 	current_directory = os.getcwd()
 	final_directory = os.path.join(current_directory, r'out')
 	if not os.path.exists(final_directory):
